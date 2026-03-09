@@ -53,3 +53,4 @@ src-tauri/app/build/
 keystore.properties
 create-commits.sh
 create-commits.sh
+add-more-commits.sh
