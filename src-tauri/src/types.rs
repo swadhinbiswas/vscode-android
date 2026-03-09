@@ -231,3 +231,10 @@ pub struct TokenData {
     pub expires_at: Option<u64>,
     pub refresh_token: Option<String>,
 }
+
+/// Application configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AppConfig {
+    pub debug_mode: bool,
+    pub sync_interval: u64,
+}
