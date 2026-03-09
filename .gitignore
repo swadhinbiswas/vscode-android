@@ -54,3 +54,15 @@ keystore.properties
 create-commits.sh
 create-commits.sh
 add-more-commits.sh
+final-commits.sh
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Windows
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
