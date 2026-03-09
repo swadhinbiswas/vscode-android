@@ -238,3 +238,12 @@ pub struct AppConfig {
     pub debug_mode: bool,
     pub sync_interval: u64,
 }
+
+impl Default for AppConfig {
+    fn default() -> Self {
+        Self {
+            debug_mode: false,
+            sync_interval: 5000,
+        }
+    }
+}
