@@ -200,3 +200,9 @@ export interface WorkspaceConfig {
   folders: string[];
   settings: EditorSettings;
 }
+
+export interface ExtensionManifest {
+  name: string;
+  version: string;
+  engines: Record<string, string>;
+}
