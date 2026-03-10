@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-vscode-bg text-vscode-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* VS Code-like styles */
+@layer components {
+  .vscode-button {
+    @apply bg-vscode-blue text-white px-4 py-2 rounded 
+           hover:bg-opacity-90 transition-colors duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .vscode-input {
+    @apply bg-vscode-bg border border-vscode-border text-vscode-foreground
+           px-3 py-2 rounded focus:outline-none focus:border-vscode-blue
+           placeholder:text-gray-500;
+  }
+  
+  .vscode-sidebar-item {
+    @apply flex items-center gap-2 px-4 py-1 cursor-pointer
+           hover:bg-vscode-line-highlight text-vscode-foreground
+           text-sidebar transition-colors duration-100;
+  }
+  
+  .vscode-sidebar-item-active {
+    @apply bg-vscode-selection text-white;
+  }
+  
+  .vscode-tab {
+    @apply flex items-center gap-2 px-3 py-1 bg-vscode-bg 
+           border-r border-vscode-border cursor-pointer
+           hover:bg-vscode-line-highlight min-w-[120px] max-w-[200px];
+  }
+  
+  .vscode-tab-active {
+    @apply bg-vscode-bg border-t-2 border-t-vscode-blue;
+  }
+  
+  .vscode-status-bar-item {
+    @apply flex items-center gap-1 px-2 py-0.5 hover:bg-white/10
+           cursor-pointer transition-colors duration-100 text-status;
+  }
+  
+  .monaco-editor-container {
+    @apply w-full h-full;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .vscode-sidebar {
+    @apply absolute z-20 transform -translate-x-full transition-transform duration-200;
+  }
+  
+  .vscode-sidebar.open {
+    @apply translate-x-0;
+  }
+}
+
+/* Touch-friendly targets */
+@media (pointer: coarse) {
+  button, 
+  .vscode-sidebar-item,
+  .vscode-tab,
+  .vscode-status-bar-item {
+    @apply min-h-[44px];
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s ease-out;
+}
