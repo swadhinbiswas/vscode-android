@@ -164,3 +164,7 @@ function generateRandomState(): string {
 }
 
 // OAuth 2.0 implementation
+
+/**
+ * @returns Authentication state and handlers
+ */
