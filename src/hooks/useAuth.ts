@@ -162,3 +162,5 @@ function generateRandomState(): string {
   crypto.getRandomValues(array);
   return Array.from(array, (b) => b.toString(16).padStart(2, '0')).join('');
 }
+
+// OAuth 2.0 implementation
