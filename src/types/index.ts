@@ -189,3 +189,14 @@ export interface SyncOperation {
   timestamp: number;
   checksum?: string;
 }
+
+// Additional editor types
+export interface EditorTheme {
+  name: string;
+  colors: Record<string, string>;
+}
+
+export interface WorkspaceConfig {
+  folders: string[];
+  settings: EditorSettings;
+}
