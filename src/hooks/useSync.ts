@@ -143,3 +143,5 @@ export function useSync(options: UseSyncOptions = {}) {
 
 // Fix for React reference
 import React from 'react';
+
+// Real-time synchronization
