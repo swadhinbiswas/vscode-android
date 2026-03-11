@@ -196,3 +196,7 @@ export function useEditor(options: UseEditorOptions = {}) {
     fileContents,
   };
 }
+
+/**
+ * @returns Editor state and operations
+ */
