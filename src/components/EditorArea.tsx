@@ -307,3 +307,5 @@ export function EditorArea() {
     </div>
   );
 }
+
+// Monaco Editor integration
