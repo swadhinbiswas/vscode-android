@@ -145,3 +145,7 @@ export function useSync(options: UseSyncOptions = {}) {
 import React from 'react';
 
 // Real-time synchronization
+
+/**
+ * @returns Sync state and operations
+ */
