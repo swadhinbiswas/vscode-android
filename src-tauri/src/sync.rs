@@ -372,3 +372,5 @@ async fn check_network_connectivity() -> bool {
         Err(_) => false,
     }
 }
+
+// Sync engine implementation
