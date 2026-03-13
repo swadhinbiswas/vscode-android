@@ -143,3 +143,9 @@
 .animate-slide-in {
   animation: slideIn 0.2s ease-out;
 }
+
+/* Additional animations */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
