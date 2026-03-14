@@ -38,3 +38,10 @@ test('should display GitHub logo', async ({ page }) => {
   const githubIcon = page.locator('[data-testid="icon-github"]');
   await expect(githubIcon).toBeVisible();
 });
+
+test('should show loading state during auth', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForTimeout(2000);
+  await page.click('button:has-text("Sign in with GitHub")');
+  await expect(page.locator('text=Connecting...')).toBeVisible();
+});
