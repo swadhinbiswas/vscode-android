@@ -72,3 +72,8 @@ Thumbs.db
 
 # Cache
 .cache/
+
+# Build scripts
+create-commits.sh
+add-more-commits.sh
+final-commits.sh
