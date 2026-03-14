@@ -230,3 +230,9 @@ describe('deepClone', () => {
     expect(clone).not.toBe(obj);
   });
 });
+
+describe('shallowEqual', () => {
+  it('compares shallow equality', () => {
+    expect({ a: 1 }).toEqual({ a: 1 });
+  });
+});
