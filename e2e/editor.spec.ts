@@ -69,3 +69,7 @@ test.describe('Editor Functionality', () => {
     await expect(page.locator('[data-testid="icon-git"]')).toBeVisible();
   });
 });
+
+test('should display Monaco editor container', async ({ page }) => {
+  await expect(page.locator('.monaco-editor-container')).toBeVisible();
+});
