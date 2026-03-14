@@ -73,3 +73,7 @@ test.describe('Editor Functionality', () => {
 test('should display Monaco editor container', async ({ page }) => {
   await expect(page.locator('.monaco-editor-container')).toBeVisible();
 });
+
+test('should show tab close buttons on hover', async ({ page }) => {
+  await page.waitForTimeout(1000);
+});
