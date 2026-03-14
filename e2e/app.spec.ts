@@ -25,3 +25,9 @@ test('should display progress bar', async ({ page }) => {
   const progressBar = page.locator('[style*="width"]');
   await expect(progressBar).toBeVisible();
 });
+
+test('should show loading animation', async ({ page }) => {
+  await page.goto('/');
+  const spinner = page.locator('.spinner');
+  await expect(spinner).toBeVisible();
+});
