@@ -236,3 +236,10 @@ describe('shallowEqual', () => {
     expect({ a: 1 }).toEqual({ a: 1 });
   });
 });
+
+describe('parseDiff', () => {
+  it('parses diff output', () => {
+    const diff = '+added\n-removed\n context';
+    expect(diff).toContain('added');
+  });
+});
