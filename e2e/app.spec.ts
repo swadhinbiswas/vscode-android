@@ -19,3 +19,9 @@ test.describe('VSCode Android App', () => {
     await expect(page.locator('text=v1.0.0')).toBeVisible();
   });
 });
+
+test('should display progress bar', async ({ page }) => {
+  await page.goto('/');
+  const progressBar = page.locator('[style*="width"]');
+  await expect(progressBar).toBeVisible();
+});
