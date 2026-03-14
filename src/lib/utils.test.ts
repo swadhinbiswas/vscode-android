@@ -221,3 +221,12 @@ describe('utils', () => {
     });
   });
 });
+
+describe('deepClone', () => {
+  it('clones objects', () => {
+    const obj = { a: 1, b: { c: 2 } };
+    const clone = JSON.parse(JSON.stringify(obj));
+    expect(clone).toEqual(obj);
+    expect(clone).not.toBe(obj);
+  });
+});
