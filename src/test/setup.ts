@@ -87,3 +87,10 @@ vi.mock('lucide-react', () => ({
   Play: vi.fn(() => <svg data-testid="icon-play" />),
   Server: vi.fn(() => <svg data-testid="icon-server" />),
 }));
+
+// Mock IntersectionObserver
+global.IntersectionObserver = class IntersectionObserver {
+  observe = () => {};
+  unobserve = () => {};
+  disconnect = () => {};
+};
