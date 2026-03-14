@@ -31,3 +31,10 @@ test.describe('Authentication Flow', () => {
     ).toBeVisible();
   });
 });
+
+test('should display GitHub logo', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForTimeout(2000);
+  const githubIcon = page.locator('[data-testid="icon-github"]');
+  await expect(githubIcon).toBeVisible();
+});
