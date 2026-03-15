@@ -350,3 +350,43 @@ See [LICENSE](LICENSE) for details.
 
 ---
 *Built with ❤️ for mobile developers*
+
+## CI/CD & Automated Builds
+
+### Build Status
+
+[![CI/CD Pipeline](https://github.com/your-org/vscode-android/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/your-org/vscode-android/actions/workflows/ci-cd.yml)
+[![Quick Build](https://github.com/your-org/vscode-android/actions/workflows/quick-build.yml/badge.svg)](https://github.com/your-org/vscode-android/actions/workflows/quick-build.yml)
+
+### Download Pre-built APKs
+
+You can download test builds directly from GitHub Actions:
+
+1. Go to **Actions** tab
+2. Select **Quick Build (Manual Trigger)**
+3. Click **Run workflow** (or view past runs)
+4. Download APK from **Artifacts** section
+
+### Trigger a Build
+
+#### Automatic (on push)
+```bash
+git push origin main
+```
+
+#### Manual (from GitHub)
+1. Navigate to **Actions** → **Quick Build**
+2. Click **Run workflow**
+3. Select build type
+4. Download APK when complete
+
+### Install Downloaded APK
+
+```bash
+# Via ADB (USB debugging required)
+adb install vscode-android-debug.apk
+
+# Or transfer to device and install directly
+```
+
+See [BUILD_GUIDE.md](.github/BUILD_GUIDE.md) for detailed instructions.
