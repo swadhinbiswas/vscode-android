@@ -343,3 +343,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 - [ ] Pair programming mode
 - [ ] Custom themes
 - [ ] Plugin marketplace
+
+## License
+
+See [LICENSE](LICENSE) for details.
