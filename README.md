@@ -347,3 +347,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## License
 
 See [LICENSE](LICENSE) for details.
+
+---
+*Built with ❤️ for mobile developers*
