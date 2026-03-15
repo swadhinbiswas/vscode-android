@@ -398,3 +398,10 @@ For reviewers:
 - [ ] Tests are included
 - [ ] Documentation is updated
 
+
+## Release Schedule
+
+- Major releases: Quarterly
+- Minor releases: Monthly
+- Patch releases: As needed
+
