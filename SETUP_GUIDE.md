@@ -354,3 +354,9 @@ react-devtools
 For issues and questions:
 - GitHub Issues: https://github.com/your-org/vscode-android/issues
 - Discussions: https://github.com/your-org/vscode-android/discussions
+
+## Environment Variables
+```bash
+export GITHUB_CLIENT_ID=your_id
+export GITHUB_CLIENT_SECRET=your_secret
+```
