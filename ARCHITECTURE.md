@@ -394,3 +394,9 @@ graph LR
 - WebAssembly-based plugin sandbox
 - Capability-based security model
 
+
+### Plugin Architecture
+
+- Lazy loading for performance
+- Isolated execution context
+
