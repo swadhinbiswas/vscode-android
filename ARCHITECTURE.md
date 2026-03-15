@@ -386,3 +386,11 @@ graph LR
 4. **Tauri over React Native**: Better performance, smaller bundle, Rust backend
 5. **Jotai over Redux**: Simpler API, better TypeScript support, atomic updates
 6. **WebSocket for Real-time**: Lower latency than polling for sync updates
+
+## Future Architecture
+
+### Extension System
+
+- WebAssembly-based plugin sandbox
+- Capability-based security model
+
