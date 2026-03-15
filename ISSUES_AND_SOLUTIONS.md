@@ -498,3 +498,12 @@ If you encounter issues not covered here:
    - Expected vs actual behavior
    - Device/OS version
    - Logs and screenshots
+
+## Build Performance
+
+### Issue: Slow Incremental Builds
+
+**Solutions**:
+1. Use `cargo check` for quick checks
+2. Enable sccache for Rust caching
+
