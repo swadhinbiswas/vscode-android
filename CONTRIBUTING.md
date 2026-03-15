@@ -389,3 +389,12 @@ Look for issues labeled:
 ## Thank You!
 
 Your contributions make VSCode Android better for everyone. We appreciate your time and effort!
+
+## Code Review Checklist
+
+For reviewers:
+
+- [ ] Code follows style guidelines
+- [ ] Tests are included
+- [ ] Documentation is updated
+
