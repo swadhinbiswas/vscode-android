@@ -507,3 +507,10 @@ If you encounter issues not covered here:
 1. Use `cargo check` for quick checks
 2. Enable sccache for Rust caching
 
+
+### Issue: Large Bundle Size
+
+**Solutions**:
+1. Enable ProGuard/R8
+2. Tree-shake unused code
+
