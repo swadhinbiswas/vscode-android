@@ -77,3 +77,4 @@ Thumbs.db
 create-commits.sh
 add-more-commits.sh
 final-commits.sh
+GITHUB_ACTIONS_SETUP.md
