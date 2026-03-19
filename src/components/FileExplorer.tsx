@@ -247,7 +247,7 @@ export function FileExplorer({ onFileSelect }: FileExplorerProps) {
                   setNewItemPrompt(null);
                 }
               }}
-              onBlur={() => {
+              onBlur={(e) => {
                 if (e.currentTarget.value) {
                   handleCreateItem(e.currentTarget.value, newItemPrompt.type, newItemPrompt.parentPath);
                 } else {

@@ -50,7 +50,6 @@ export function EditorArea() {
           // Try to get from codespace
           try {
             content = await invoke<string>('get_remote_file', {
-              app: window.__TAURI_INTERNALS__?.appId,
               path: activeFile,
             });
           } catch {
@@ -389,7 +388,7 @@ export function EditorArea() {
                   scrollBeyondLastLine: false,
                   smoothScrolling: true,
                   cursorBlinking: 'smooth',
-                  cursorSmoothCaretAnimation: true,
+                  cursorSmoothCaretAnimation: 'on' as const,
                   padding: { top: 8, bottom: 8 },
                   folding: true,
                   bracketPairColorization: { enabled: true },
@@ -401,7 +400,7 @@ export function EditorArea() {
                   formatOnType: true,
                   autoClosingBrackets: 'always',
                   autoClosingQuotes: 'always',
-                } as MonacoEditorOptions}
+                }}
               />
               
               {/* Find/Replace Widget */}

@@ -1,33 +1,25 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { invoke } from '@tauri-apps/api/core';
 import {
-  Menu,
-  Search,
-  GitGraph,
-  Bug,
-  Blocks,
-  Settings,
   User,
   LogOut,
   Maximize2,
   Minimize2,
   PanelLeftClose,
   PanelLeftOpen,
-  Wifi,
-  WifiOff,
-  Check,
   Loader2,
   Cloud,
   CloudOff,
+  WifiOff,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   isSidebarOpenAtom,
   isCommandPaletteOpenAtom,
   isFullscreenAtom,
-  syncStatusAtom,
-  connectedCodespaceAtom,
+  syncStatusWritableAtom,
+  connectedCodespaceWritableAtom,
   githubUserAtom,
   openFilesAtom,
   activeFileAtom,
@@ -43,24 +35,24 @@ import { QuickOpen } from './QuickOpen';
 import { TerminalPanel } from './TerminalPanel';
 import type { SyncStatus } from '../types';
 
-type SideBarView = 'explorer' | 'search' | 'git' | 'debug' | 'extensions' | 'settings';
+type SideBarView = 'explorer' | 'search' | 'git' | 'settings';
 
 export function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
-  const [isFullscreen, setIsFullscreen] = useSetAtom(isFullscreenAtom);
+  const [isFullscreen, setIsFullscreen] = useAtom(isFullscreenAtom);
   const setIsCommandPaletteOpen = useSetAtom(isCommandPaletteOpenAtom);
-  const [syncStatus, setSyncStatus] = useAtom(syncStatusAtom);
-  const [connectedCodespace] = useAtom(connectedCodespaceAtom);
+  const [syncStatus, setSyncStatus] = useAtom(syncStatusWritableAtom);
+  const [connectedCodespace] = useAtom(connectedCodespaceWritableAtom);
   const [githubUser] = useAtom(githubUserAtom);
-  const [openFiles, setOpenFiles] = useAtom(openFilesAtom);
-  const [activeFile, setActiveFile] = useAtom(activeFileAtom);
+  const [openFiles] = useAtom(openFilesAtom);
+  const [activeFile] = useAtom(activeFileAtom);
   const [theme, setTheme] = useAtom(themeAtom);
   const [editorSettings] = useAtom(editorSettingsAtom);
-  
+
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [activeSideBarView, setActiveSideBarView] = useState<SideBarView>('explorer');
   const [showTerminal, setShowTerminal] = useState(false);
-  const [terminalHeight, setTerminalHeight] = useState(30);
+  const [terminalHeight] = useState(30);
 
   // Keyboard shortcuts
   useEffect(() => {

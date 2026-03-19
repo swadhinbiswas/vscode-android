@@ -350,7 +350,7 @@ export function GitPanel() {
           disabled={isCommitting || !commitMessage.trim() || stagedFiles.size === 0}
           className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-vscode-blue text-white rounded text-sm hover:bg-vscode-blue/80 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Commit className="w-4 h-4" />
+          <Check className="w-4 h-4" />
           <span>{isCommitting ? 'Committing...' : 'Commit'}</span>
         </button>
       </div>

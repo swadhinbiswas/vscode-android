@@ -1,22 +1,21 @@
 import { useAtomValue } from 'jotai';
 import {
-  Wifi,
   WifiOff,
   Cloud,
   CloudOff,
   Check,
   Loader2,
   GitBranch,
+  Terminal,
   Bug,
   Bell,
   Settings,
-  Terminal,
 } from 'lucide-react';
 import { syncStatusAtom, connectedCodespaceAtom, activeFileAtom } from '../App';
 
 export function StatusBar() {
   const syncStatus = useAtomValue(syncStatusAtom);
-  const [connectedCodespace] = useAtomValue(connectedCodespaceAtom);
+  const connectedCodespace = useAtomValue(connectedCodespaceAtom);
   const activeFile = useAtomValue(activeFileAtom);
 
   return (

@@ -126,7 +126,6 @@ export function TerminalPanel() {
         foreground: '#cccccc',
         cursor: '#cccccc',
         cursorAccent: '#1e1e1e',
-        selection: 'rgba(255, 255, 255, 0.3)',
         black: '#000000',
         red: '#f44747',
         green: '#6a9955',

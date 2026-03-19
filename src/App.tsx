@@ -34,15 +34,41 @@ export const isCommandPaletteOpenAtom = atom<boolean>(false);
 export const isFullscreenAtom = atom<boolean>(false);
 export const themeAtom = atom<'dark' | 'light' | 'system'>('dark');
 
+// Make atoms writable for useSetAtom
+export const githubUserWritableAtom = atom<
+  GitHubUser | null,
+  [GitHubUser | null],
+  void
+>(
+  (get) => get(githubUserAtom),
+  (get, set, update) => set(githubUserAtom, update)
+);
+export const connectedCodespaceWritableAtom = atom<
+  Codespace | null,
+  [Codespace | null],
+  void
+>(
+  (get) => get(connectedCodespaceAtom),
+  (get, set, update) => set(connectedCodespaceAtom, update)
+);
+export const syncStatusWritableAtom = atom<
+  SyncStatus | null,
+  [SyncStatus | null],
+  void
+>(
+  (get) => get(syncStatusAtom),
+  (get, set, update) => set(syncStatusAtom, update)
+);
+
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [appState, setAppState] = useState<'splash' | 'auth' | 'codespace' | 'editor'>('splash');
   const [initError, setInitError] = useState<string | null>(null);
 
   const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
-  const setGithubUser = useSetAtom(githubUserAtom);
-  const setConnectedCodespace = useSetAtom(connectedCodespaceAtom);
-  const setSyncStatus = useSetAtom(syncStatusAtom);
+  const setGithubUser = useSetAtom(githubUserWritableAtom);
+  const setConnectedCodespace = useSetAtom(connectedCodespaceWritableAtom);
+  const setSyncStatus = useSetAtom(syncStatusWritableAtom);
   const theme = useAtomValue(themeAtom);
   const { initializeWorkspace } = useFileSystem();
 

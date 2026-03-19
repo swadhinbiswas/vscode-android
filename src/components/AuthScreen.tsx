@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { useSetAtom } from 'jotai';
 import { invoke } from '@tauri-apps/api/core';
-import { open } from '@tauri-apps/plugin-shell';
 import { Github, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   isAuthenticatedAtom,
-  githubUserAtom,
-  type GitHubUser,
+  githubUserWritableAtom,
 } from '../App';
-import type { CommandResponse, TokenData } from '../types';
+import type { CommandResponse, TokenData, GitHubUser } from '../types';
 
 interface AuthScreenProps {
   onAuthComplete: () => void;
@@ -18,7 +16,7 @@ interface AuthScreenProps {
 export function AuthScreen({ onAuthComplete }: AuthScreenProps) {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
-  const setGithubUser = useSetAtom(githubUserAtom);
+  const setGithubUser = useSetAtom(githubUserWritableAtom);
 
   const handleGitHubLogin = async () => {
     setIsAuthenticating(true);
