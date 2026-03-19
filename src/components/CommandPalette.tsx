@@ -225,10 +225,14 @@ export function CommandPalette() {
                   cmd.action();
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-2 text-left transition-colors
-                  ${index === selectedIndex ? 'bg-vscode-selection' : 'hover:bg-vscode-line-highlight'}`}
+                className={`w-full flex items-center gap-3 px-4 py-2 text-left transition-colors ${
+                  index === selectedIndex ? 'bg-vscode-selection' : 'hover:bg-vscode-line-highlight'
+                }`}
               >
-                <getCommandIcon(cmd.category) className="w-4 h-4 text-vscode-gutter-foreground" />
+                {(() => {
+                  const IconComponent = getCommandIcon(cmd.category);
+                  return <IconComponent className="w-4 h-4 text-vscode-gutter-foreground" />;
+                })()}
                 <div className="flex-1 min-w-0">
                   <p className="text-vscode-foreground text-sm truncate">{cmd.label}</p>
                   {cmd.description && (

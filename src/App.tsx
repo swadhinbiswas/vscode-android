@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Toaster } from 'react-hot-toast';
 import { invoke } from '@tauri-apps/api/core';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { SplashScreen } from './components/SplashScreen';
 import { AuthScreen } from './components/AuthScreen';
 import { CodespaceSelector } from './components/CodespaceSelector';
 import { MainLayout } from './components/MainLayout';
 import { CommandPalette } from './components/CommandPalette';
+import { useFileSystem } from './hooks/useFileSystem';
 import type { GitHubUser, Codespace, SyncStatus, EditorSettings } from './types';
 
 // Global state atoms
@@ -30,61 +32,67 @@ export const activeFileAtom = atom<string | null>(null);
 export const isSidebarOpenAtom = atom<boolean>(true);
 export const isCommandPaletteOpenAtom = atom<boolean>(false);
 export const isFullscreenAtom = atom<boolean>(false);
-export const themeAtom = atom<'dark' | 'light'>('dark');
+export const themeAtom = atom<'dark' | 'light' | 'system'>('dark');
 
-function App() {
+function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [appState, setAppState] = useState<'splash' | 'auth' | 'codespace' | 'editor'>('splash');
-  
+  const [initError, setInitError] = useState<string | null>(null);
+
   const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
   const setGithubUser = useSetAtom(githubUserAtom);
   const setConnectedCodespace = useSetAtom(connectedCodespaceAtom);
   const setSyncStatus = useSetAtom(syncStatusAtom);
   const theme = useAtomValue(themeAtom);
+  const { initializeWorkspace } = useFileSystem();
 
-  useEffect(() => {
-    // Initial app load
-    const initApp = async () => {
-      try {
-        // Check for stored auth
-        const stored = localStorage.getItem('vscode_android_auth');
-        if (stored) {
-          const auth = JSON.parse(stored);
-          if (auth.isAuthenticated) {
-            setIsAuthenticated(true);
-            setGithubUser(auth.user);
+  // Initialize app
+  const initApp = useCallback(async () => {
+    try {
+      // Check for stored auth
+      const stored = localStorage.getItem('vscode_android_auth');
+      if (stored) {
+        const auth = JSON.parse(stored);
+        if (auth.isAuthenticated) {
+          setIsAuthenticated(true);
+          setGithubUser(auth.user);
+
+          // Check for stored codespace
+          if (auth.codespace) {
+            setConnectedCodespace(auth.codespace);
+            setAppState('editor');
             
-            // Check for stored codespace
-            if (auth.codespace) {
-              setConnectedCodespace(auth.codespace);
-              setAppState('editor');
-            } else {
-              setAppState('codespace');
-            }
+            // Initialize workspace
+            await initializeWorkspace();
           } else {
-            setAppState('auth');
+            setAppState('codespace');
           }
         } else {
           setAppState('auth');
         }
-        
-        // Fetch initial sync status
-        try {
-          const status = await invoke<SyncStatus>('get_sync_status');
-          setSyncStatus(status);
-        } catch (e) {
-          console.warn('Failed to fetch sync status:', e);
-        }
-      } catch (error) {
-        console.error('App initialization error:', error);
+      } else {
         setAppState('auth');
-      } finally {
-        setIsLoading(false);
       }
-    };
 
+      // Fetch initial sync status
+      try {
+        const status = await invoke<SyncStatus>('get_sync_status');
+        setSyncStatus(status);
+      } catch (e) {
+        console.warn('Failed to fetch sync status:', e);
+      }
+    } catch (error) {
+      console.error('App initialization error:', error);
+      setInitError(error instanceof Error ? error.message : 'Unknown error');
+      setAppState('auth');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [setIsAuthenticated, setGithubUser, setConnectedCodespace, setSyncStatus, initializeWorkspace]);
+
+  useEffect(() => {
     initApp();
-  }, []);
+  }, [initApp]);
 
   // Update HTML class for theme
   useEffect(() => {
@@ -96,8 +104,36 @@ function App() {
     }
   }, [theme]);
 
+  // Handle auth complete
+  const handleAuthComplete = () => {
+    setAppState('codespace');
+  };
+
+  // Handle codespace select
+  const handleCodespaceSelect = () => {
+    setAppState('editor');
+    initializeWorkspace();
+  };
+
   if (isLoading) {
     return <SplashScreen />;
+  }
+
+  if (initError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-vscode-bg p-4">
+        <div className="max-w-md w-full bg-vscode-sidebar border border-vscode-border rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-sync-error mb-2">Initialization Error</h2>
+          <p className="text-sm text-vscode-gutter-foreground mb-4">{initError}</p>
+          <button
+            onClick={initApp}
+            className="px-4 py-2 bg-vscode-blue text-white rounded hover:bg-vscode-blue/80"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -112,14 +148,24 @@ function App() {
           },
         }}
       />
-      
+
       {appState === 'splash' && <SplashScreen />}
-      {appState === 'auth' && <AuthScreen onAuthComplete={() => setAppState('codespace')} />}
-      {appState === 'codespace' && <CodespaceSelector onSelect={() => setAppState('editor')} />}
+      {appState === 'auth' && <AuthScreen onAuthComplete={handleAuthComplete} />}
+      {appState === 'codespace' && (
+        <CodespaceSelector onSelect={handleCodespaceSelect} />
+      )}
       {appState === 'editor' && <MainLayout />}
-      
+
       <CommandPalette />
     </>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 

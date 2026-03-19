@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { isSidebarOpenAtom } from '../App';
 
-type Activity = 'explorer' | 'search' | 'source-control' | 'debug' | 'extensions';
+type Activity = 'explorer' | 'search' | 'git' | 'debug' | 'extensions' | 'settings';
 
 interface ActivityItem {
   id: Activity;
@@ -22,20 +22,24 @@ interface ActivityItem {
 const activities: ActivityItem[] = [
   { id: 'explorer', icon: Files, label: 'Explorer' },
   { id: 'search', icon: Search, label: 'Search' },
-  { id: 'source-control', icon: GitGraph, label: 'Source Control' },
+  { id: 'git', icon: GitGraph, label: 'Source Control' },
   { id: 'debug', icon: Bug, label: 'Run and Debug' },
   { id: 'extensions', icon: Blocks, label: 'Extensions' },
 ];
 
-export function ActivityBar() {
-  const [activeActivity, setActiveActivity] = useState<Activity>('explorer');
+interface ActivityBarProps {
+  activeView: Activity;
+  onViewChange: (view: Activity) => void;
+}
+
+export function ActivityBar({ activeView, onViewChange }: ActivityBarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
 
   const handleClick = (activity: Activity) => {
-    if (activeActivity === activity && isSidebarOpen) {
+    if (activeView === activity && isSidebarOpen) {
       setIsSidebarOpen(false);
     } else {
-      setActiveActivity(activity);
+      onViewChange(activity);
       setIsSidebarOpen(true);
     }
   };
@@ -44,8 +48,8 @@ export function ActivityBar() {
     <div className="w-activity-bar bg-vscode-activity-bar flex flex-col items-center py-2 border-r border-vscode-border">
       {activities.map((item) => {
         const Icon = item.icon;
-        const isActive = activeActivity === item.id && isSidebarOpen;
-        
+        const isActive = activeView === item.id && isSidebarOpen;
+
         return (
           <button
             key={item.id}
@@ -66,10 +70,17 @@ export function ActivityBar() {
 
       {/* Settings at bottom */}
       <button
-        className="w-12 h-12 flex items-center justify-center text-vscode-gutter-foreground hover:text-vscode-foreground transition-colors"
+        onClick={() => handleClick('settings')}
+        className={`w-12 h-12 flex items-center justify-center transition-colors relative mb-2
+          ${activeView === 'settings' && isSidebarOpen 
+            ? 'text-white' 
+            : 'text-vscode-gutter-foreground hover:text-vscode-foreground'}`}
         title="Settings"
       >
         <Settings className="w-6 h-6" />
+        {activeView === 'settings' && isSidebarOpen && (
+          <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-vscode-blue" />
+        )}
       </button>
     </div>
   );

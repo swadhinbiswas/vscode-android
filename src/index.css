@@ -51,9 +51,9 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--border);
   }
-  
+
   body {
     @apply bg-vscode-bg text-vscode-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;

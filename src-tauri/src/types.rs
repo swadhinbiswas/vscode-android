@@ -247,3 +247,23 @@ impl Default for AppConfig {
         }
     }
 }
+
+/// Get current app state
+#[tauri::command]
+pub async fn get_app_state() -> Result<CommandResponse<AppState>, String> {
+    Ok(CommandResponse::success(AppState::default()))
+}
+
+/// Set editor settings
+#[tauri::command]
+pub async fn set_editor_settings(settings: EditorSettings) -> Result<CommandResponse<()>, String> {
+    // In production, persist to store
+    Ok(CommandResponse::success(()))
+}
+
+/// Set theme
+#[tauri::command]
+pub async fn set_theme(theme: String) -> Result<CommandResponse<()>, String> {
+    // In production, persist to store
+    Ok(CommandResponse::success(()))
+}

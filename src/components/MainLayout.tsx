@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { invoke } from '@tauri-apps/api/core';
 import {
   Menu,
   Search,
-  Files,
   GitGraph,
   Bug,
   Blocks,
@@ -33,25 +32,35 @@ import {
   openFilesAtom,
   activeFileAtom,
   themeAtom,
+  editorSettingsAtom,
 } from '../App';
 import { ActivityBar } from './ActivityBar';
 import { SideBar } from './SideBar';
 import { EditorArea } from './EditorArea';
 import { StatusBar } from './StatusBar';
 import { CommandPalette } from './CommandPalette';
+import { QuickOpen } from './QuickOpen';
+import { TerminalPanel } from './TerminalPanel';
 import type { SyncStatus } from '../types';
+
+type SideBarView = 'explorer' | 'search' | 'git' | 'debug' | 'extensions' | 'settings';
 
 export function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
   const [isFullscreen, setIsFullscreen] = useSetAtom(isFullscreenAtom);
   const setIsCommandPaletteOpen = useSetAtom(isCommandPaletteOpenAtom);
-  const syncStatus = useAtomValue(syncStatusAtom);
+  const [syncStatus, setSyncStatus] = useAtom(syncStatusAtom);
   const [connectedCodespace] = useAtom(connectedCodespaceAtom);
   const [githubUser] = useAtom(githubUserAtom);
   const [openFiles, setOpenFiles] = useAtom(openFilesAtom);
   const [activeFile, setActiveFile] = useAtom(activeFileAtom);
   const [theme, setTheme] = useAtom(themeAtom);
+  const [editorSettings] = useAtom(editorSettingsAtom);
+  
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [activeSideBarView, setActiveSideBarView] = useState<SideBarView>('explorer');
+  const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalHeight, setTerminalHeight] = useState(30);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -61,35 +70,62 @@ export function MainLayout() {
         e.preventDefault();
         setIsCommandPaletteOpen(true);
       }
-      
+
+      // Ctrl/Cmd + P: Quick Open
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p' && !e.shiftKey) {
+        e.preventDefault();
+        setIsCommandPaletteOpen(true);
+      }
+
       // Ctrl/Cmd + B: Toggle sidebar
       if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
         e.preventDefault();
         setIsSidebarOpen((prev) => !prev);
       }
-      
+
       // Ctrl/Cmd + Shift + F: Search
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F') {
         e.preventDefault();
-        // Open search in sidebar
+        setActiveSideBarView('search');
+        setIsSidebarOpen(true);
       }
-      
+
+      // Ctrl/Cmd + ` : Toggle terminal
+      if ((e.ctrlKey || e.metaKey) && e.key === '`') {
+        e.preventDefault();
+        setShowTerminal((prev) => !prev);
+      }
+
+      // Ctrl/Cmd + S: Save
+      if ((e.ctrlKey || e.metaKey) && e.key === 's' && !e.shiftKey) {
+        e.preventDefault();
+        // Trigger save through custom event
+        window.dispatchEvent(new CustomEvent('save-active-file'));
+      }
+
+      // Ctrl/Cmd + F: Find in file
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f' && !e.shiftKey) {
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent('open-find-widget'));
+      }
+
       // Escape: Close panels
       if (e.key === 'Escape') {
         setShowUserMenu(false);
+        setIsCommandPaletteOpen(false);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [setIsCommandPaletteOpen, setIsSidebarOpen]);
 
   // Sync status polling
   useEffect(() => {
     const pollSyncStatus = async () => {
       try {
         const status = await invoke<SyncStatus>('get_sync_status');
-        // Update would happen through atom in real implementation
+        setSyncStatus(status);
       } catch (error) {
         console.warn('Failed to poll sync status:', error);
       }
@@ -97,13 +133,14 @@ export function MainLayout() {
 
     const interval = setInterval(pollSyncStatus, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [setSyncStatus]);
 
   const handleLogout = async () => {
     try {
       await invoke('logout');
       localStorage.removeItem('vscode_android_auth');
       window.location.reload();
+      toast.success('Logged out successfully');
     } catch (error) {
       toast.error('Failed to logout');
     }
@@ -115,6 +152,10 @@ export function MainLayout() {
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  const handleViewChange = (view: SideBarView) => {
+    setActiveSideBarView(view);
   };
 
   return (
@@ -164,6 +205,15 @@ export function MainLayout() {
               </>
             )}
           </div>
+
+          {/* Terminal Toggle */}
+          <button
+            onClick={() => setShowTerminal(!showTerminal)}
+            className={`p-1.5 hover:bg-white/10 rounded transition-colors ${showTerminal ? 'bg-white/10' : ''}`}
+            title="Toggle Terminal (Ctrl+`)"
+          >
+            <span className="text-xs text-vscode-foreground">Terminal</span>
+          </button>
 
           {/* Fullscreen Toggle */}
           <button
@@ -227,13 +277,25 @@ export function MainLayout() {
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Activity Bar */}
-        <ActivityBar />
+        <ActivityBar activeView={activeSideBarView} onViewChange={handleViewChange} />
 
         {/* Sidebar */}
-        {isSidebarOpen && <SideBar />}
+        {isSidebarOpen && <SideBar activeView={activeSideBarView} />}
 
         {/* Editor Area */}
-        <EditorArea />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <EditorArea />
+          
+          {/* Terminal Panel */}
+          {showTerminal && (
+            <div 
+              className="border-t border-vscode-border"
+              style={{ height: `${terminalHeight}%` }}
+            >
+              <TerminalPanel />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Status Bar */}
@@ -241,6 +303,9 @@ export function MainLayout() {
 
       {/* Command Palette */}
       <CommandPalette />
+
+      {/* Quick Open */}
+      <QuickOpen />
 
       {/* Click outside to close user menu */}
       {showUserMenu && (
