@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import Editor from '@monaco-editor/react';
 import { X, Save, FileSymlink } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -16,8 +16,12 @@ import { FindReplaceWidget } from './FindReplaceWidget';
 import type { MonacoEditorOptions } from '../types';
 
 export function EditorArea() {
-  const [openFiles, setOpenFiles] = useAtom(openFilesAtom);
-  const [activeFile, setActiveFile] = useAtom(activeFileAtom);
+  const openFiles = useAtomValue(openFilesAtom);
+  // @ts-ignore - Jotai type inference issue
+  const setOpenFiles = useSetAtom(openFilesAtom);
+  const activeFile = useAtomValue(activeFileAtom);
+  // @ts-ignore - Jotai type inference issue
+  const setActiveFile = useSetAtom(activeFileAtom);
   const editorSettings = useAtomValue(editorSettingsAtom);
   const syncStatus = useAtomValue(syncStatusAtom);
   const connectedCodespace = useAtomValue(connectedCodespaceAtom);

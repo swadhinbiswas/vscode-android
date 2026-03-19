@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useFileSystem } from '../hooks/useFileSystem';
 import { isCommandPaletteOpenAtom, openFilesAtom, activeFileAtom } from '../App';
 import { FileNode } from '../types';
@@ -7,9 +7,14 @@ import { File, Search, X, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export function QuickOpen() {
-  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useAtom(isCommandPaletteOpenAtom);
-  const [openFiles, setOpenFiles] = useAtom(openFilesAtom);
-  const [activeFile, setActiveFile] = useAtom(activeFileAtom);
+  const isCommandPaletteOpen = useAtomValue(isCommandPaletteOpenAtom);
+  const setIsCommandPaletteOpen = useSetAtom(isCommandPaletteOpenAtom);
+  const openFiles = useAtomValue(openFilesAtom);
+  // @ts-ignore - Jotai type inference issue
+  const setOpenFiles = useSetAtom(openFilesAtom);
+  const activeFile = useAtomValue(activeFileAtom);
+  // @ts-ignore - Jotai type inference issue
+  const setActiveFile = useSetAtom(activeFileAtom);
   
   const { fileTree, readFile } = useFileSystem();
   const [query, setQuery] = useState('');

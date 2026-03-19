@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { invoke } from '@tauri-apps/api/core';
 import { Loader2, Server, Plus, RefreshCw, Play, Square } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { connectedCodespaceWritableAtom, githubUserAtom } from '../App';
+import { connectedCodespaceAtom, githubUserAtom } from '../App';
 import type { Codespace, CommandResponse } from '../types';
 
 interface CodespaceSelectorProps {
@@ -15,7 +15,8 @@ export function CodespaceSelector({ onSelect }: CodespaceSelectorProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedCodespace, setSelectedCodespace] = useState<Codespace | null>(null);
-  const [connectedCodespace, setConnectedCodespace] = useAtom(connectedCodespaceWritableAtom);
+  // @ts-ignore - Jotai type inference issue
+  const setConnectedCodespace = useSetAtom(connectedCodespaceAtom);
   const [githubUser] = useAtom(githubUserAtom);
 
   useEffect(() => {

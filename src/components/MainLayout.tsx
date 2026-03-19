@@ -18,8 +18,8 @@ import {
   isSidebarOpenAtom,
   isCommandPaletteOpenAtom,
   isFullscreenAtom,
-  syncStatusWritableAtom,
-  connectedCodespaceWritableAtom,
+  syncStatusAtom,
+  connectedCodespaceAtom,
   githubUserAtom,
   openFilesAtom,
   activeFileAtom,
@@ -40,9 +40,11 @@ type SideBarView = 'explorer' | 'search' | 'git' | 'settings';
 export function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
   const [isFullscreen, setIsFullscreen] = useAtom(isFullscreenAtom);
-  const setIsCommandPaletteOpen = useSetAtom(isCommandPaletteOpenAtom);
-  const [syncStatus, setSyncStatus] = useAtom(syncStatusWritableAtom);
-  const [connectedCodespace] = useAtom(connectedCodespaceWritableAtom);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useAtom(isCommandPaletteOpenAtom);
+  // @ts-ignore - Jotai type inference issue
+  const setSyncStatus = useSetAtom(syncStatusAtom);
+  const [syncStatus] = useAtom(syncStatusAtom);
+  const [connectedCodespace] = useAtom(connectedCodespaceAtom);
   const [githubUser] = useAtom(githubUserAtom);
   const [openFiles] = useAtom(openFilesAtom);
   const [activeFile] = useAtom(activeFileAtom);

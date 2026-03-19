@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { 
   ChevronRight, 
   ChevronDown, 
@@ -35,8 +35,12 @@ export function FileExplorer({ onFileSelect }: FileExplorerProps) {
     deletePath,
   } = useFileSystem();
 
-  const [openFiles, setOpenFiles] = useAtom(openFilesAtom);
-  const [activeFile, setActiveFile] = useAtom(activeFileAtom);
+  const openFiles = useAtomValue(openFilesAtom);
+  // @ts-ignore - Jotai type inference issue
+  const setOpenFiles = useSetAtom(openFilesAtom);
+  const activeFile = useAtomValue(activeFileAtom);
+  // @ts-ignore - Jotai type inference issue
+  const setActiveFile = useSetAtom(activeFileAtom);
   const [contextMenu, setContextMenu] = useState<{
     visible: boolean;
     x: number;
