@@ -99,10 +99,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          cmdline-tools-version: 9.0
-          build-tools-version: 34.0.0
-          platform-version: 34
-          ndk-version: 25.2.9519653
+          packages: 'build-tools;34.0.0 platform-tools platforms;android-34 ndk;25.2.9519653'
 
       - name: Install Tauri CLI
         run: cargo install tauri-cli --locked
@@ -167,10 +164,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          cmdline-tools-version: 9.0
-          build-tools-version: 34.0.0
-          platform-version: 34
-          ndk-version: 25.2.9519653
+          packages: 'build-tools;34.0.0 platform-tools platforms;android-34 ndk;25.2.9519653'
 
       - name: Install Tauri CLI
         run: cargo install tauri-cli --locked
