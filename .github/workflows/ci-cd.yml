@@ -108,9 +108,7 @@ jobs:
         run: npm ci
 
       - name: Build Android Debug APK
-        run: |
-          cd src-tauri
-          cargo tauri android build --debug --apk
+        run: cargo tauri android build --debug --apk
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
           ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
@@ -181,9 +179,7 @@ jobs:
             -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Build Android Release AAB
-        run: |
-          cd src-tauri
-          cargo tauri android build --release
+        run: cargo tauri android build --release
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
           ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
