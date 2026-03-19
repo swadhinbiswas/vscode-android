@@ -19,6 +19,11 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
+  # Android Keystore secrets (configure in GitHub Settings > Secrets)
+  # TAURI_ANDROID_KEYSTORE_PATH: Path to keystore file (stored in secrets)
+  # TAURI_ANDROID_KEYSTORE_PASSWORD: Keystore password
+  # TAURI_ANDROID_KEYSTORE_KEY_PASSWORD: Key password
+  # TAURI_ANDROID_KEYSTORE_KEY_ALIAS: Key alias
 
 jobs:
   # Job 1: Lint and Test (Fast feedback)
@@ -165,6 +170,12 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Initialize Android project and configure permissions
+        run: |
+          cargo tauri android init
+          chmod +x ./scripts/setup-android-permissions.sh
+          ./scripts/setup-android-permissions.sh
+
       - name: Build Android Debug APK
         run: cargo tauri android build --debug --apk
         env:
@@ -276,11 +287,29 @@ jobs:
             -keyalg RSA -keysize 2048 -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
+      - name: Initialize Android project and configure permissions
+        run: |
+          cargo tauri android init
+          chmod +x ./scripts/setup-android-permissions.sh
+          ./scripts/setup-android-permissions.sh
+
+      - name: Setup release keystore (if secrets are configured)
+        if: env.TAURI_ANDROID_KEYSTORE_PASSWORD != ''
+        run: |
+          echo "Setting up release keystore..."
+          mkdir -p ~/.android
+          # Decode and write keystore file from secret
+          echo "${{ secrets.TAURI_ANDROID_KEYSTORE_FILE }}" | base64 -d > ~/.android/release-keystore.jks
+          
       - name: Build Android Release AAB
         run: cargo tauri android build --release
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
           ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+          TAURI_ANDROID_KEYSTORE_PATH: ${{ secrets.TAURI_ANDROID_KEYSTORE_FILE && '~/.android/release-keystore.jks' || '' }}
+          TAURI_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.TAURI_ANDROID_KEYSTORE_PASSWORD }}
+          TAURI_ANDROID_KEYSTORE_KEY_PASSWORD: ${{ secrets.TAURI_ANDROID_KEYSTORE_KEY_PASSWORD }}
+          TAURI_ANDROID_KEYSTORE_KEY_ALIAS: ${{ secrets.TAURI_ANDROID_KEYSTORE_KEY_ALIAS }}
 
       - name: Upload Release AAB
         uses: actions/upload-artifact@v4
