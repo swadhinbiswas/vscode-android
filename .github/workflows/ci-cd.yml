@@ -26,7 +26,7 @@ jobs:
     name: Lint & Test
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,11 +37,29 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
           components: rustfmt, clippy
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
       - name: Install dependencies
         run: npm ci
@@ -73,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: [lint-and-test]
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -84,11 +102,39 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
           targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-android-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-android-
+            ${{ runner.os }}-cargo-
+
+      - name: Cache Tauri CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-tauri
+          key: ${{ runner.os }}-tauri-cli-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-tauri-cli-
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -101,8 +147,20 @@ jobs:
         with:
           packages: 'build-tools;34.0.0 platform-tools platforms;android-34 ndk;25.2.9519653'
 
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.ANDROID_HOME }}/ndk
+            ${{ env.ANDROID_HOME }}/platforms
+            ${{ env.ANDROID_HOME }}/build-tools
+          key: ${{ runner.os }}-android-sdk-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-android-sdk-
+
       - name: Install Tauri CLI
         run: cargo install tauri-cli --locked
+        if: steps.cache-tauri.outputs.cache-hit != 'true'
 
       - name: Install npm dependencies
         run: npm ci
@@ -147,11 +205,39 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
           targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-android-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-android-
+            ${{ runner.os }}-cargo-
+
+      - name: Cache Tauri CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-tauri
+          key: ${{ runner.os }}-tauri-cli-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-tauri-cli-
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -164,8 +250,20 @@ jobs:
         with:
           packages: 'build-tools;34.0.0 platform-tools platforms;android-34 ndk;25.2.9519653'
 
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.ANDROID_HOME }}/ndk
+            ${{ env.ANDROID_HOME }}/platforms
+            ${{ env.ANDROID_HOME }}/build-tools
+          key: ${{ runner.os }}-android-sdk-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-android-sdk-
+
       - name: Install Tauri CLI
         run: cargo install tauri-cli --locked
+        if: steps.cache-tauri.outputs.cache-hit != 'true'
 
       - name: Install npm dependencies
         run: npm ci
@@ -207,7 +305,7 @@ jobs:
     timeout-minutes: 30
     needs: [build-android-debug]
     continue-on-error: true
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -218,11 +316,27 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Run E2E tests
         run: npm run test:e2e
