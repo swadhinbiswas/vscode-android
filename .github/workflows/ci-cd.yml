@@ -171,12 +171,14 @@ jobs:
         run: npm ci
 
       - name: Initialize Android project and configure permissions
+        working-directory: ./src-tauri
         run: |
           cargo tauri android init
-          chmod +x ./scripts/setup-android-permissions.sh
-          ./scripts/setup-android-permissions.sh
+          chmod +x ../scripts/setup-android-permissions.sh
+          ../scripts/setup-android-permissions.sh
 
       - name: Build Android Debug APK
+        working-directory: ./src-tauri
         run: cargo tauri android build --debug --apk
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
@@ -288,10 +290,11 @@ jobs:
             -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Initialize Android project and configure permissions
+        working-directory: ./src-tauri
         run: |
           cargo tauri android init
-          chmod +x ./scripts/setup-android-permissions.sh
-          ./scripts/setup-android-permissions.sh
+          chmod +x ../scripts/setup-android-permissions.sh
+          ../scripts/setup-android-permissions.sh
 
       - name: Setup release keystore (if secrets are configured)
         if: env.TAURI_ANDROID_KEYSTORE_PASSWORD != ''
@@ -302,6 +305,7 @@ jobs:
           echo "${{ secrets.TAURI_ANDROID_KEYSTORE_FILE }}" | base64 -d > ~/.android/release-keystore.jks
 
       - name: Build Android Release AAB
+        working-directory: ./src-tauri
         run: cargo tauri android build --release
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
