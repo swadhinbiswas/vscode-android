@@ -1,34 +1,16 @@
 {
-  "identifier": "com.vscode.android",
-  "version": "1.0.0",
-  "scripts": {
-    "non-exhaustive-deps": "warn",
-    "before-dev-command": "npm run dev",
-    "before-build-command": "npm run build"
-  },
-  "android": {
-    "minSdkVersion": 24,
-    "targetSdkVersion": 34,
-    "compileSdkVersion": 34,
-    "buildToolsVersion": "34.0.0",
-    "ndkVersion": "25.2.9519653",
-    "permissions": [
-      "INTERNET",
-      "ACCESS_NETWORK_STATE",
-      "WRITE_EXTERNAL_STORAGE",
-      "READ_EXTERNAL_STORAGE"
-    ],
-    "features": [
-      "android.hardware.touchscreen",
-      "android.hardware.touchscreen.multitouch"
-    ],
-    "activityConfig": {
-      "launchMode": "singleTask",
-      "orientation": "userLandscape",
-      "resizeableActivity": true
-    }
-  },
-  "customUrlScheme": {
-    "schemes": ["vscode-android"]
-  }
+  "identifier": "android-capability",
+  "description": "Capability for Android platform",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "fs:default",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
+    "http:default",
+    "websocket:default",
+    "shell:default",
+    "store:default"
+  ],
+  "platforms": ["android"]
 }
