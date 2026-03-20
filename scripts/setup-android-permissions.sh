@@ -1,13 +1,13 @@
 #!/bin/bash
 # Script to configure Android permissions for Tauri Android builds
-# This runs before the build in CI/CD
+# This runs before the build in CI/CD (from src-tauri directory)
 
 set -e
 
-ANDROID_MANIFEST="src-tauri/gen/android/app/src/main/AndroidManifest.xml"
+ANDROID_MANIFEST="gen/android/app/src/main/AndroidManifest.xml"
 
 # Generate Android project if it doesn't exist
-if [ ! -d "src-tauri/gen/android" ]; then
+if [ ! -d "gen/android" ]; then
     echo "Generating Android project..."
     cargo tauri android init
 fi
