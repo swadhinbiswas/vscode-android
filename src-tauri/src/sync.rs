@@ -149,7 +149,7 @@ pub async fn push_all_changes(app: AppHandle) -> Result<CommandResponse<u32>, St
 
 /// Pull all changes from codespace
 #[tauri::command]
-pub async fn pull_all_changes(app: AppHandle) -> Result<CommandResponse<()>, String> {
+pub async fn pull_all_changes(_app: AppHandle) -> Result<CommandResponse<()>, String> {
     // This would typically poll the codespace for changes
     // For now, we'll just mark as synced
     let mut state = SYNC_STATE.write().await;
@@ -244,7 +244,7 @@ async fn process_operation(token: &crate::types::TokenData, operation: SyncOpera
             push_file_to_codespace(token, &path, &content).await?;
         }
         SyncOperation::Pull {
-            path,
+            path: _,
             remote_checksum,
         } => {
             // Pull file from codespace

@@ -2,6 +2,7 @@ use crate::types::{CommandResponse, GitHubUser, TokenData};
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
+use tauri_plugin_store::StoreExt;
 use uuid::Uuid;
 
 const GITHUB_CLIENT_ID: &str = "Iv1.8f12a7e0c0e0e0e0"; // Replace with your OAuth app client ID
@@ -36,12 +37,8 @@ pub async fn github_login(app: AppHandle) -> Result<CommandResponse<String>, Str
         GITHUB_CLIENT_ID, GITHUB_SCOPES, state
     );
     
-    // Open browser for OAuth flow
-    if let Err(e) = tauri_plugin_shell::api::Shell::new(&app).open(&auth_url) {
-        return Err(format!("Failed to open browser: {}", e));
-    }
-    
-    Ok(CommandResponse::success(state))
+    // Return auth URL for the frontend to open
+    Ok(CommandResponse::success(auth_url))
 }
 
 /// Handle OAuth callback
@@ -146,7 +143,7 @@ pub async fn get_github_user(app: AppHandle) -> Result<CommandResponse<GitHubUse
 #[tauri::command]
 pub async fn logout(app: AppHandle) -> Result<CommandResponse<()>, String> {
     // Clear stored token
-    let store = app.store("tokens.bin").map_err(|e| e.to_string())?;
+    let store = app.get_store("tokens.bin").map_err(|e| e.to_string())?;
     store.clear();
     store.save().map_err(|e| e.to_string())?;
     
@@ -161,7 +158,7 @@ fn get_client_secret() -> &'static str {
 }
 
 fn store_token(app: &AppHandle, token: &TokenData) -> Result<(), String> {
-    let store = app.store("tokens.bin").map_err(|e| e.to_string())?;
+    let store = app.get_store("tokens.bin").map_err(|e: tauri_plugin_store::Error| e.to_string())?;
     store
         .set("github_token", serde_json::to_value(token).map_err(|e| e.to_string())?)
         .save()
@@ -170,7 +167,7 @@ fn store_token(app: &AppHandle, token: &TokenData) -> Result<(), String> {
 }
 
 fn get_stored_token(app: &AppHandle) -> Result<TokenData, String> {
-    let store = app.store("tokens.bin").map_err(|e| e.to_string())?;
+    let store = app.get_store("tokens.bin").map_err(|e: tauri_plugin_store::Error| e.to_string())?;
     let token_value = store
         .get("github_token")
         .ok_or_else(|| "No token stored".to_string())?;

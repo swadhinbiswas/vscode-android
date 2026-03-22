@@ -238,7 +238,7 @@ fn apply_non_overlapping_merge(
             if let Some(local_region) = local_diff.iter().find(|r| i >= r.start && i < r.end) {
                 let local_start = local_region.start;
                 let local_end = local_region.end;
-                let offset = local_start as isize - local_region.start as isize;
+                let _offset = local_start as isize - local_region.start as isize;
                 
                 for j in local_region.start..local_region.end {
                     if j < local_lines.len() {

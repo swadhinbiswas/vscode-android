@@ -256,14 +256,14 @@ pub async fn get_app_state() -> Result<CommandResponse<AppState>, String> {
 
 /// Set editor settings
 #[tauri::command]
-pub async fn set_editor_settings(settings: EditorSettings) -> Result<CommandResponse<()>, String> {
+pub async fn set_editor_settings(_settings: EditorSettings) -> Result<CommandResponse<()>, String> {
     // In production, persist to store
     Ok(CommandResponse::success(()))
 }
 
 /// Set theme
 #[tauri::command]
-pub async fn set_theme(theme: String) -> Result<CommandResponse<()>, String> {
+pub async fn set_theme(_theme: String) -> Result<CommandResponse<()>, String> {
     // In production, persist to store
     Ok(CommandResponse::success(()))
 }
