@@ -38,7 +38,7 @@ export function formatFileSize(bytes: number): string {
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
 }
 
 /**
@@ -179,7 +179,8 @@ export function shallowEqual(a: any, b: any): boolean {
  */
 export function truncate(text: string, length: number): string {
   if (text.length <= length) return text;
-  return text.slice(0, length) + '...';
+  const truncatedLength = Math.max(0, length - 3);
+  return text.slice(0, truncatedLength) + '...';
 }
 
 /**

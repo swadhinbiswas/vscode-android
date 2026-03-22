@@ -39,12 +39,12 @@ function AppContent() {
   const [appState, setAppState] = useState<'splash' | 'auth' | 'codespace' | 'editor'>('splash');
   const [initError, setInitError] = useState<string | null>(null);
 
-  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-  // @ts-ignore - Jotai type inference issue
+  const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  // @ts-expect-error - Jotai type inference issue
   const setGithubUser = useSetAtom(githubUserAtom);
-  // @ts-ignore - Jotai type inference issue
+  // @ts-expect-error - Jotai type inference issue
   const setConnectedCodespace = useSetAtom(connectedCodespaceAtom);
-  // @ts-ignore - Jotai type inference issue
+  // @ts-expect-error - Jotai type inference issue
   const setSyncStatus = useSetAtom(syncStatusAtom);
   const theme = useAtomValue(themeAtom);
   const { initializeWorkspace } = useFileSystem();

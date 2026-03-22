@@ -6,8 +6,8 @@ describe('SplashScreen', () => {
   it('renders loading spinner', () => {
     render(<SplashScreen />);
     
-    // Check for spinner element
-    const spinner = document.querySelector('.spinner');
+    // Check for spinner element - the component uses animate-spin class
+    const spinner = document.querySelector('.animate-spin');
     expect(spinner).toBeInTheDocument();
   });
 

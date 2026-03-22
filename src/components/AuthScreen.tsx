@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { invoke } from '@tauri-apps/api/core';
 import { Github, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -15,8 +15,8 @@ interface AuthScreenProps {
 
 export function AuthScreen({ onAuthComplete }: AuthScreenProps) {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-  // @ts-ignore - Jotai type inference issue
+  const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  // @ts-expect-error - Jotai type inference issue
   const setGithubUser = useSetAtom(githubUserAtom);
 
   const handleGitHubLogin = async () => {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { invoke } from '@tauri-apps/api/core';
 import { Loader2, Server, Plus, RefreshCw, Play, Square } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -15,7 +15,7 @@ export function CodespaceSelector({ onSelect }: CodespaceSelectorProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedCodespace, setSelectedCodespace] = useState<Codespace | null>(null);
-  // @ts-ignore - Jotai type inference issue
+  // @ts-expect-error - Jotai type inference issue
   const setConnectedCodespace = useSetAtom(connectedCodespaceAtom);
   const [githubUser] = useAtom(githubUserAtom);
 
@@ -205,7 +205,7 @@ export function CodespaceSelector({ onSelect }: CodespaceSelectorProps) {
             Select Codespace
           </h1>
           <p className="text-sm text-vscode-gutter-foreground">
-            {githubUser?.login}'s Codespaces
+            {githubUser?.login}&apos;s Codespaces
           </p>
         </div>
         <button
